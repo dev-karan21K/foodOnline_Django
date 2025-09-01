@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -70,16 +71,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'foodOnline_main.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -89,6 +80,8 @@ DATABASES = {
         'HOST': config('DB_HOST'),
     }
 }
+
+AUTH_USER_MODEL = 'accounts.User'
 
 
 # Password validation
@@ -130,6 +123,10 @@ STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [
     'foodOnline_main/static'
 ]
+
+# media configurations
+MEDIA_URL = '/media/' #folder
+MEDIA_ROOT = BASE_DIR /'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
