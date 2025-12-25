@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from .models import Cart
 from .context_processors import get_cart_counter, get_cart_amounts
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 # Create your views here.
 def marketplace(request):
@@ -113,3 +114,23 @@ def delete_cart(request, cart_id):
                 return JsonResponse({'status': 'Failed','message': 'Cart item does not exist!'})
         else:
             return JsonResponse({'status': 'Failed','message': 'Invalid request!'})
+        
+
+def search(request):
+    address = request.GET['address']
+    latitude = request.GET['lat']
+    longitude = request.GET['lng']
+    radius = request.GET['radius']
+    keyword = request.GET['keyword']
+
+    # get vendor ids that has the food item the user is looking for
+    fetch_vendors_by_fooditems = FoodItem.objects.filter(food_title__icontains=keyword, is_available=True).values_list('vendor', flat=True)
+    vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_fooditems) | Q(vendor_name__icontains=keyword, is_approved=True, user__is_active=True))
+
+    vendor_count = vendors.count()
+    context = {
+        'vendors': vendors,
+        'vendor_count': vendor_count,
+    }
+    
+    return render(request, 'marketplace/listings.html', context)
